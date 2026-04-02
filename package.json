@@ -1,0 +1,14 @@
+{
+  "name": "@pipeworx/mcp-qrcode",
+  "version": "1.0.0",
+  "description": "MCP server for QR code generation and decoding",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "MIT",
+  "keywords": ["mcp", "mcp-server", "model-context-protocol", "pipeworx", "qrcode"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pipeworx-io/mcp-qrcode.git"
+  },
+  "files": ["src"]
+}
