@@ -1,29 +1,55 @@
 # mcp-qrcode
 
-MCP server for QR code generation and decoding via [api.qrserver.com](https://goqr.me/api/). Free, no auth required.
+QR Code MCP — wraps api.qrserver.com (free, no auth)
+
+Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 250+ live data sources.
 
 ## Tools
 
 | Tool | Description |
 |------|-------------|
-| `create_qr` | Generate a QR code image URL for any text or URL |
-| `read_qr` | Decode a QR code from a publicly accessible image URL |
+| `read_qr` | Decode QR code images to extract embedded text or URLs. Returns the decoded content. Use when you need to read what\'s stored in a QR code. |
 
-## Quickstart (Pipeworx Gateway)
+## Quick Start
 
-```bash
-curl -X POST https://gateway.pipeworx.io/mcp \
-  -H "Content-Type: application/json" \
-  -d '{
-    "jsonrpc": "2.0",
-    "method": "tools/call",
-    "params": {
-      "name": "qrcode_create_qr",
-      "arguments": { "data": "https://pipeworx.io" }
-    },
-    "id": 1
-  }'
+Add to your MCP client (Claude Desktop, Cursor, Windsurf, etc.):
+
+```json
+{
+  "mcpServers": {
+    "qrcode": {
+      "url": "https://gateway.pipeworx.io/qrcode/mcp"
+    }
+  }
+}
 ```
+
+Or connect to the full Pipeworx gateway for access to all 250+ data sources:
+
+```json
+{
+  "mcpServers": {
+    "pipeworx": {
+      "url": "https://gateway.pipeworx.io/mcp"
+    }
+  }
+}
+```
+
+## Using with ask_pipeworx
+
+Instead of calling tools directly, you can ask questions in plain English:
+
+```
+ask_pipeworx({ question: "your question about Qrcode data" })
+```
+
+The gateway picks the right tool and fills the arguments automatically.
+
+## More
+
+- [All tools and guides](https://github.com/pipeworx-io/examples)
+- [pipeworx.io](https://pipeworx.io)
 
 ## License
 
