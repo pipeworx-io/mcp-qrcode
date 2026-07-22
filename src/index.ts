@@ -1,11 +1,3 @@
-/**
- * QR Code MCP — wraps api.qrserver.com (free, no auth)
- *
- * Tools:
- * - create_qr: Generate a QR code image URL for any text or URL
- * - read_qr: Decode a QR code from an image URL
- */
-
 interface McpToolDefinition {
   name: string;
   description: string;
@@ -19,7 +11,19 @@ interface McpToolDefinition {
 interface McpToolExport {
   tools: McpToolDefinition[];
   callTool: (name: string, args: Record<string, unknown>) => Promise<unknown>;
+  meter?: { credits: number };
+  cost?: Record<string, unknown>;
+  provider?: string;
 }
+
+/**
+ * QR Code MCP — wraps api.qrserver.com (free, no auth)
+ *
+ * Tools:
+ * - create_qr: Generate a QR code image URL for any text or URL
+ * - read_qr: Decode a QR code from an image URL
+ */
+
 
 const BASE_URL = 'https://api.qrserver.com/v1';
 
@@ -34,7 +38,7 @@ const tools: McpToolExport['tools'] = [
   {
     name: 'create_qr',
     description:
-      'Generate a QR code for any text or URL. Returns the image URL — no image is fetched. The URL can be embedded directly in an <img> tag or downloaded.',
+      'Generate a scannable QR code from text or URLs. Returns an image URL ready to embed or download. Use when you need to encode information into a QR code.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -52,7 +56,7 @@ const tools: McpToolExport['tools'] = [
   },
   {
     name: 'read_qr',
-    description: 'Decode a QR code from a publicly accessible image URL. Returns the decoded text.',
+    description: 'Decode QR code images to extract embedded text or URLs. Returns the decoded content. Use when you need to read what\'s stored in a QR code.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -92,14 +96,28 @@ function createQr(data: string, size: number) {
 }
 
 async function readQr(url: string) {
-  const params = new URLSearchParams({ fileurl: url });
-  const res = await fetch(`${BASE_URL}/read-qr-code/?${params}`);
+  if (!/^https?:\/\//i.test(url)) {
+    throw new Error('read_qr requires a publicly accessible http(s) image URL of the QR code, e.g. "https://example.com/qr.png".');
+  }
+  // qrserver's server-side `fileurl` fetch is broken (returns "download error"
+  // for every URL → 100% failures). Download the image ourselves and POST the
+  // bytes as multipart instead — qrserver decodes uploaded files reliably.
+  const imgRes = await fetch(url, { headers: { 'User-Agent': 'Pipeworx/1.0 (pipeworx.io)' } });
+  if (!imgRes.ok) {
+    throw new Error(`Could not download the QR image from ${url} (HTTP ${imgRes.status}). Make sure it's a public, direct image URL.`);
+  }
+  const bytes = new Uint8Array(await imgRes.arrayBuffer());
+  const ct = imgRes.headers.get('content-type') || 'image/png';
+  const form = new FormData();
+  form.append('file', new Blob([bytes], { type: ct }), 'qr.png');
+
+  const res = await fetch(`${BASE_URL}/read-qr-code/`, { method: 'POST', body: form });
   if (!res.ok) throw new Error(`QR Server error: ${res.status}`);
   const data = (await res.json()) as RawReadResponse;
   const symbol = data?.[0]?.symbol?.[0];
   if (!symbol) throw new Error('QR Server returned an unexpected response');
-  if (symbol.error) throw new Error(`QR decode error: ${symbol.error}`);
-  return { decoded: symbol.data ?? '' };
+  if (symbol.error) throw new Error(`QR decode error: ${symbol.error} (the image may not contain a readable QR code).`);
+  return { decoded: symbol.data ?? '', source_url: url };
 }
 
-export default { tools, callTool } satisfies McpToolExport;
+export default { tools, callTool, meter: { credits: 1 } } satisfies McpToolExport;
