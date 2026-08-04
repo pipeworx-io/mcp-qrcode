@@ -2,13 +2,14 @@
 
 QR Code MCP — wraps api.qrserver.com (free, no auth)
 
-Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 1342+ live data sources.
+Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 1394+ live data sources.
 
 ## Tools
 
 | Tool | Description |
 |------|-------------|
-| `read_qr` | Decode QR code images to extract embedded text or URLs. Returns the decoded content. Use when you need to read what\'s stored in a QR code. |
+| `create_qr` | Generate a scannable QR code from text or URLs. Returns an image URL ready to embed or download. Use when you need to encode information into a QR code. |
+| `read_qr` | Decode QR code images to extract embedded text or URLs. Returns the decoded content. Use when you need to read what's stored in a QR code. |
 
 ## Quick Start
 
@@ -24,7 +25,7 @@ Add to your MCP client (Claude Desktop, Cursor, Windsurf, etc.):
 }
 ```
 
-Or connect to the full Pipeworx gateway for access to all 1342+ data sources:
+Or connect to the full Pipeworx gateway for access to all 1394+ data sources:
 
 ```json
 {
@@ -48,7 +49,7 @@ The gateway picks the right tool and fills the arguments automatically.
 
 ## More
 
-- [All tools and guides](https://github.com/pipeworx-io/examples)
+- [Docs and guides](https://pipeworx.io/docs)
 - [pipeworx.io](https://pipeworx.io)
 
 ## License
