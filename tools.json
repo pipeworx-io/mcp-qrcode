@@ -1,0 +1,38 @@
+[
+  {
+    "name": "create_qr",
+    "description": "Generate a scannable QR code from text or URLs. Returns an image URL ready to embed or download. Use when you need to encode information into a QR code.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "description": "The text or URL to encode in the QR code."
+        },
+        "size": {
+          "type": "number",
+          "description": "Width and height of the QR code image in pixels (default 200)."
+        }
+      },
+      "required": [
+        "data"
+      ]
+    }
+  },
+  {
+    "name": "read_qr",
+    "description": "Decode QR code images to extract embedded text or URLs. Returns the decoded content. Use when you need to read what's stored in a QR code.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "Publicly accessible URL of the QR code image to decode."
+        }
+      },
+      "required": [
+        "url"
+      ]
+    }
+  }
+]
