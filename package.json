@@ -1,6 +1,6 @@
 {
   "name": "@pipeworx/mcp-qrcode",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "QR Code MCP — wraps api.qrserver.com (free, no auth)",
   "type": "module",
   "main": "lib/index.js",
@@ -27,7 +27,7 @@
     "mode": "gateway",
     "slug": "qrcode",
     "gatewaySlug": "qrcode",
-    "sourceHash": "v1-0e571a462a4309bc809dbd6287dd52f11fd8a67e4ebce4c19ca276eb7e4a0d38",
-    "sourceCommit": "6bae4cfa7b6a73bbe014dc8820a19c80c842b21e"
+    "sourceHash": "v1-50fd3fca76046e4bb59b2291f6c05878529e0b7718c95f1287219db1c0d552cb",
+    "sourceCommit": "db27387ed3ef7ec4805d465f7964a7f65f937006"
   }
 }
